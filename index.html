@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PEP TALK | Inteligência Artificial</title>
+
+  <style>
+    :root {
+      --blue: #0029FF;
+      --blue-soft: rgba(0, 41, 255, 0.10);
+      --blue-line: rgba(0, 41, 255, 0.28);
+      --bg: #050816;
+      --bg-card: rgba(8, 12, 28, 0.78);
+      --text: #ffffff;
+      --text-soft: #d7ddff;
+      --text-muted: #9fb0ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      padding: 40px 20px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1020px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, rgba(7, 10, 24, 0.88) 0%, rgba(4, 8, 20, 0.94) 100%);
+      border: 1px solid var(--blue-line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 20px 60px rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-top {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(0, 41, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .status {
+      font-size: 11px;
+      color: var(--blue);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    .hero-body {
+      padding: 34px 32px 22px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 42px;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+    }
+
+    .highlight {
+      color: var(--blue);
+    }
+
+    .intro {
+      margin: 0;
+      max-width: 760px;
+      color: var(--text-soft);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 22px;
+      padding: 0 32px 32px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(0, 41, 255, 0.20);
+      border-radius: 16px;
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .panel.code-panel {
+      opacity: 0.78;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(159, 176, 255, 0.62);
+      font-weight: bold;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(219, 226, 255, 0.62);
+      max-height: 280px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .invite {
+      background: linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.03) 100%);
+      border: 1px solid rgba(0, 41, 255, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .invite-title {
+      margin: 0 0 20px;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    .invite-title span {
+      color: var(--blue);
+    }
+
+    .invite p {
+      margin: 0 0 16px;
+      color: var(--text-soft);
+      line-height: 1.72;
+      font-size: 17px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0 18px;
+    }
+
+    .meta-card {
+      background: rgba(0, 41, 255, 0.08);
+      border: 1px solid rgba(0, 41, 255, 0.22);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .meta-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      color: var(--blue);
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .bottom-bar {
+      padding: 0 32px 32px;
+    }
+
+    .line {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,41,255,0) 0%, rgba(0,41,255,0.55) 50%, rgba(0,41,255,0) 100%);
+      margin-bottom: 18px;
+    }
+
+    .signature {
+      color: var(--text-muted);
+      font-size: 13px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 41, 255, 0.45);
+      border-radius: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        padding: 24px 14px 36px;
+      }
+
+      .hero-body {
+        padding: 28px 22px 20px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        padding: 0 22px 22px;
+      }
+
+      .bottom-bar {
+        padding: 0 22px 22px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
+
+      .panel.code-panel {
+        order: 2;
+      }
+
+      .panel.invite {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .hero-top {
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-body {
+        padding: 24px 18px 18px;
+      }
+
+      .grid {
+        padding: 0 18px 18px;
+      }
+
+      .bottom-bar {
+        padding: 0 18px 18px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .invite-title {
+        font-size: 24px;
+      }
+
+      .invite p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="page">
+    <div class="container">
+      <section class="hero">
+        <div class="hero-top">
+          <div class="eyebrow">PEP TALK // EVENT INVITE PROTOCOL</div>
+          <div class="status">convite decodificado</div>
+        </div>
+
+        <div class="hero-body">
+          <h1>
+            O futuro da <span class="highlight">Inteligência Artificial</span><br>
+            já está em operação.
+          </h1>
+          <p class="intro">
+            Uma experiência enriquecedora em que mergulharemos, de forma clara e envolvente, como IA,
+            agentes e automação estão redefinindo o mercado e transformando a lógica de
+            consumo, distribuição e audiência.
+          </p>
+        </div>
+
+        <div class="grid">
+          <div class="panel code-panel">
+            <h2 class="panel-title">Código detectado</h2>
+            <pre>> initializing_pep_talk.exe
+
+loading_speaker: Adriano_Henriques ✔
+loading_topic: Artificial_Intelligence ✔
+
+scanning_environment...
+LLMs detected
+Agents detected
+Behavior shift detected
+
+>>> WARNING:
+O modelo atual de consumo e audiência está mudando.
+
+>>> ACTION REQUIRED:
+join_event --date 06/05/2026 --time 09h30
+
+>>> DESCRIPTION:
+Uma conversa sobre como IA, agentes e automação estão redefinindo o mercado.
+
+>>> STATUS:
+convite disponível
+confirmação recomendada</pre>
+          </div>
+
+          <div class="panel invite">
+            <h2 class="invite-title"><span>PEP TALK – Adriano Henriques</span></h2>
+
+            <p>
+O cenário de consumo e audiência está passando por mudanças relevantes, impulsionadas pela evolução de LLMs, agentes de IA e novos mecanismos de descoberta, como crawlers e sistemas de recomendação. Esses avanços estão alterando a forma como conteúdos são acessados, interpretados e distribuídos, trazendo novos desafios e oportunidades para mensuração e entendimento das audiências.
+            </p>
+
+            <p>
+Neste encontro, propomos uma experiência enriquecedora, em que mergulharemos, de forma clara e envolvente, em como a Inteligência Artificial, os agentes e a automação estão redefinindo o mercado e transformando a lógica de consumo, distribuição e audiência.
+            </p>
+
+            <div class="meta">
+              <div class="meta-card">
+                <span class="meta-label">Data</span>
+                <div class="meta-value">06 de maio de 2026</div>
+              </div>
+              <div class="meta-card">
+                <span class="meta-label">Horário</span>
+                <div class="meta-value">09h30</div>
+              </div>
+            </div>
+
+            <p>
+              Uma oportunidade para entender as mudanças em curso e refletir sobre como nos
+              preparar para o que vem a seguir.
+            </p>
+
+            <div class="footer-note">Confirmação recomendada.</div>
+          </div>
+        </div>
+
+        <div class="bottom-bar">
+          <div class="line"></div>
+          <div class="signature">PEP TALK // Adriano Henriques // Artificial Intelligence</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    let letters = "01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ<>/[]{}+-=*_";
+    let fontSize = 14;
+    let columns = 0;
+    let drops = [];
+
+    function setupMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = [];
+
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * canvas.height / fontSize;
+      }
+    }
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(5, 8, 22, 0.08)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#0029FF";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setupMatrix();
+    window.addEventListener("resize", setupMatrix);
+    setInterval(drawMatrix, 40);
+  </script>
+</body>
+</html>
